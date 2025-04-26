@@ -1,45 +1,48 @@
-# Chain Metrics Dashboard
+# Chain Metrics for Hedera Hashgraph
 
-A real-time blockchain metrics dashboard that tracks various on-chain metrics including:
-- Hedera Hashgraph Transaction Count
-- USDC Minted on Hedera
-- Crypto Greed/Fear Index
-
-## Tech Stack
-- Backend: Python/FastAPI
-- Frontend: TypeScript/React
-- Database: PostgreSQL
-- Containerization: Docker
+A modular analytics platform for Hedera Hashgraph, starting with data collection and time-series metrics. 
 
 ## Project Structure
+
 ```
-.
-├── backend/           # Python FastAPI backend service
-├── frontend/         # React frontend
-├── database/         # Database migrations and schemas
-└── docker/           # Docker configuration
+chain-metrics-app/
+├── backend/
+│   ├── ingest/
+│   │   └── hedera_ingest.py          # Pulls data from mirror node or SDK
+│   ├── models/
+│   │   └── metric_engine.py          # Polars + DuckDB models/metrics
+│   ├── api/
+│   │   └── main.py                   # FastAPI app exposing metrics
+│   ├── storage/
+│   │   └── duckdb_connector.py       # DuckDB logic (read/write/query)
+│   ├── utils/
+│   │   └── time_helpers.py           # Handy timestamp converters, etc.
+│   └── requirements.txt
+├── data/
+│   └── hedera_txn.parquet            # Sample data files (or local DuckDB file)
+├── frontend/
+│   └── (React/Vite/Tailwind App)     # Fully separate, API-driven UI
+└── README.md
 ```
 
-## Setup Instructions
+## Quickstart: Ingest Hedera Transactions
 
-### Prerequisites
-- Python 3.11+
-- Node.js 18+
-- Docker and Docker Compose
-- PostgreSQL 15+
+1. **Install dependencies**
 
-### Development Setup
-1. Clone the repository
-2. Run `docker compose up --build` to start all services
-3. Access the application:
-   - Frontend: http://localhost:3000
-   - Backend API: http://localhost:8080
-   - API Documentation: http://localhost:8080/docs
+```bash
+cd chain-metrics/backend
+pip install -r requirements.txt
+```
 
-## API Endpoints
-- `/api/metrics/hedera/tx-count` - Hedera transaction count
-- `/api/metrics/hedera/usdc-minted` - USDC minted on Hedera
-- `/api/metrics/crypto/greed-fear` - Crypto Greed/Fear Index
+2. **Run the ingestion script**
 
-## License
-MIT
+```bash
+python ingest/hedera_ingest.py
+```
+
+This will fetch recent transactions from the Hedera Mirror Node and save them as a Parquet file in `data/hedera_txn.parquet`.
+
+---
+
+- Modular, testable, and ready for extension to contracts, tokens, and more.
+- Uses Polars for fast analytics and Parquet for efficient storage. 
