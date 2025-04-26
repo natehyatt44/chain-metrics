@@ -30,7 +30,7 @@ chain-metrics-app/
 1. **Install dependencies**
 
 ```bash
-cd chain-metrics/backend
+cd backend
 pip install -r requirements.txt
 ```
 
